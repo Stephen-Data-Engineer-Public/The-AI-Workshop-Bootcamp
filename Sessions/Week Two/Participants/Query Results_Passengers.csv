@@ -1,0 +1,1 @@
+COLUMN_NAME,DATA_TYPE,IS_NULLABLEnational_id,int,NOpassenger_name,varchar,YESphone_no,int,YESemail,varchar,YES

@@ -1,0 +1,7 @@
+COLUMN_NAME,DATA_TYPE,IS_NULLABLE
+booking_date_time,datetime,YES
+bus_no,int,YES
+national_id,int,YES
+no_of_persons,int,YES
+ticket_no,int,NO
+total_cost,int,YES

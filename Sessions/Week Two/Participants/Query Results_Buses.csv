@@ -1,0 +1,1 @@
+COLUMN_NAME,DATA_TYPE,IS_NULLABLEbus_no,int,NOcost,int,YEStravel_date,date,YEStravel_from,varchar,YEStravel_time,time,YEStravel_to,varchar,YES

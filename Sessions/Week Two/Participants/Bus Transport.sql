@@ -1,0 +1,32 @@
+CREATE DATABASE bus_transport;
+
+USE bus_transport;
+
+CREATE TABLE passengers (
+  national_id 		INT(8) PRIMARY KEY
+, passenger_name 	VARCHAR(50)
+, phone_no   	    INT(10) 
+, email 			VARCHAR(100)
+);
+
+CREATE TABLE buses (
+  bus_no   	    INT PRIMARY KEY
+, travel_from 	VARCHAR(50)
+, travel_to 	VARCHAR(50)
+, travel_date 	DATE
+, travel_time	TIME
+, cost			INT(4)
+);
+
+CREATE TABLE bookings (
+  ticket_no     		INT PRIMARY KEY
+, national_id 			INT(8)
+, bus_no				INT
+, booking_date_time 	DATETIME
+, no_of_persons			INT(2)
+, total_cost			INT
+, FOREIGN KEY (national_id)
+	REFERENCES passengers(national_id)
+, FOREIGN KEY (bus_no)
+	REFERENCES buses(bus_no)
+);

@@ -90,7 +90,7 @@ FROM
 LEFT JOIN
     Admissions a
     ON p.PatientID = a.PatientID
-WHERE a.PatientID IS NULL;
+WHERE a.AdmissionType = 'Emergency';
 
 -- -------------------------------------------------------------
 -- EXERCISE 4   (multi-table, 3 joins)

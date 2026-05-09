@@ -118,7 +118,7 @@ INNER JOIN
     ON a.WardID = w.WardID
 ORDER BY 
     ObsDateTime ASC;
-    
+
 -- -------------------------------------------------------------
 -- EXERCISE 5   (mixed INNER + LEFT)
 -- -------------------------------------------------------------
@@ -133,8 +133,6 @@ ORDER BY
 -- Your query here:
 
 
-
-
 -- -------------------------------------------------------------
 -- EXERCISE 6   (BONUS - self join)
 -- -------------------------------------------------------------
@@ -144,9 +142,16 @@ ORDER BY
 -- Avoid duplicate pairs (A-B and B-A) and self-pairs (A-A).
 
 -- Your query here:
-
-
-
+SELECT
+    p1.FirstName + ' ' + p1.LastName AS PatientA,
+    p2.FirstName + ' ' + p2.LastName AS PatientB,
+    p1.RegisteredGP
+FROM 
+    Patients AS p1
+INNER JOIN 
+    Patients AS p2
+    ON p1.RegisteredGP = p2.RegisteredGP
+    AND p1.PatientID    < p2.PatientID;
 
 -- -------------------------------------------------------------
 -- EXERCISE 7   (BONUS - AI prompting practice)

@@ -99,11 +99,26 @@ WHERE a.PatientID IS NULL;
 --   PatientFullName, WardName, ObsDateTime, ObsType, ObsValue
 -- Order by ObsDateTime ascending.
 
--- Your query here:
-
-
-
-
+SELECT
+    FirstName + ' ' + LastName AS PatientFullName,
+    WardName,
+    ObsDateTime, 
+    ObsType, 
+    ObsValue
+FROM 
+    Patients p
+INNER JOIN 
+    Admissions a
+    ON p.PatientID = a.PatientID 
+INNER JOIN 
+    Observations o
+    ON a.AdmissionID = o.AdmissionID
+INNER JOIN 
+    Wards w
+    ON a.WardID = w.WardID
+ORDER BY 
+    ObsDateTime ASC;
+    
 -- -------------------------------------------------------------
 -- EXERCISE 5   (mixed INNER + LEFT)
 -- -------------------------------------------------------------

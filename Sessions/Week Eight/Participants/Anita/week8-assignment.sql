@@ -132,7 +132,6 @@ ORDER BY
 
 -- Your query here:
 
-
 -- -------------------------------------------------------------
 -- EXERCISE 6   (BONUS - self join)
 -- -------------------------------------------------------------
@@ -168,8 +167,36 @@ INNER JOIN
 
 -- Your prompt:
 
+/*
+Given these tables in T-SQL:
 
+Patients
+PatientID, NHSNumber, FirstName, LastName, DateOfBirth, Gender, Postcode, 
+RegisteredGP, CreatedDate
 
+Wards
+WardID, WardName, WardType, Capacity, Site
+
+Admissions
+AdmissionID, PatientID, WardID, AdmissionDate, DischargeDate, Diagnosis,
+DischargeReason
+
+Observations
+ObservationID, AdmissionID, ObsDateTime, ObsType, ObsValue, RecordedBy
+
+Write a T-SQL query to return the following columns:
+PatientID, FirstName, LastName, WardName, ObsDateTime, ObsType, 
+ObsValue, and the number of days admitted calculated from AdmissionDate 
+to the current date.
+
+Only include patients who are currently admitted (`DischargeDate IS NULL`). 
+Use JOINs and table aliases. Return only the most recent observation 
+for each patient/admission and include patients even if they have no observations recorded yet. 
+Use a method to identify the latest observation, and explain it.
+
+Explain the join strategy, explain important logic.
+
+*/
 
 -- =============================================================
 -- END OF EXERCISES

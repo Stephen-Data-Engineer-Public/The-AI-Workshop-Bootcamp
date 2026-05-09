@@ -73,10 +73,6 @@ GROUP BY
 ORDER BY
     AdmissionCount DESC;
 
-
-
-
-
 -- -------------------------------------------------------------
 -- EXERCISE 3   (anti-join pattern)
 -- -------------------------------------------------------------
@@ -84,9 +80,17 @@ ORDER BY
 -- Return: PatientID, FirstName, LastName, RegisteredGP.
 
 -- Your query here:
-
-
-
+SELECT 
+    p.PatientID, 
+    FirstName, 
+    LastName, 
+    RegisteredGP
+FROM 
+    Patients p
+LEFT JOIN
+    Admissions a
+    ON p.PatientID = a.PatientID
+WHERE a.PatientID IS NULL;
 
 -- -------------------------------------------------------------
 -- EXERCISE 4   (multi-table, 3 joins)

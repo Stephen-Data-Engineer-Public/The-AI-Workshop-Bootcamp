@@ -60,6 +60,20 @@ ORDER BY
 
 -- Your query here:
 
+SELECT 
+    WardName, 
+    COUNT(AdmissionDate) AS AdmissionCount
+FROM    
+    Wards w
+LEFT JOIN 
+    Admissions a
+    ON w.WardID = a.WardID
+GROUP BY 
+    WardName
+ORDER BY
+    AdmissionCount DESC;
+
+
 
 
 

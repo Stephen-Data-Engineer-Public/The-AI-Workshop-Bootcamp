@@ -1,0 +1,50 @@
+--Add a column called drink_category that labels each product as 'Hot Drink' (Latte or Cappuccino), 'Coffee Shot' (Espresso), or 'Cold Drink' (Tea)
+--Return customer, product, and your new column
+
+SELECT customer, product,
+	CASE
+		WHEN product IN ('Latte', 'Cappuccino') THEN 'Hot Drink'
+		WHEN product = 'Espresso' THEN 'Coffee Shot'
+		WHEN product = 'Tea' THEN 'Cold Drink'
+	END AS drink_category
+FROM vw_orders
+
+--Create a column called spend_band based on the total line value (qty × unit_price): 'Under £5', '£5–£10', or 'Over £10'
+--Show customer, product, the calculated total, and your band
+
+SELECT customer, product, (qty*unit_price) AS sales,	
+	CASE
+		WHEN (qty*unit_price) < 5 THEN 'Under £5'
+		WHEN (qty*unit_price) BETWEEN 5 and 10 THEN '£5–£10'
+		WHEN (qty*unit_price) > 10 THEN 'Over £10'
+	END AS spend_band
+FROM vw_orders
+
+--Write a GROUP BY query that shows, for each product: total orders, the count of orders with a promo code, and the count without one 
+
+SELECT product, COUNT(*) AS total_orders,
+		COUNT(CASE WHEN promo_code IS NOT NULL THEN 1 END) AS promo_orders,
+		COUNT(CASE WHEN promo_code IS NULL THEN 1 END)AS non_promo_orders
+FROM vw_orders
+GROUP BY product;
+
+--Return all orders sorted so that VIP20 promo orders appear first, then SAVE10 orders, then orders with no promo code. Within each group, sort by customer name A–Z
+
+SELECT *
+FROM vw_orders
+ORDER BY
+	CASE 
+		WHEN promo_code = 'VIP20' THEN 	1
+		WHEN promo_code = 'SAVE10' THEN 2
+		ELSE 							3
+	END,
+	customer;
+	
+--Build a single summary row (no GROUP BY) showing total revenue split into three columns: premium_revenue (unit_price ≥ £3.00), standard_revenue (£2.00–£2.99), and budget_revenue (below £2.00)
+
+SELECT
+	SUM(CASE WHEN unit_price >= 3.00 THEN qty * unit_price ELSE 0 END) AS premium_revenue,
+	SUM(CASE WHEN unit_price BETWEEN 2.00 AND 2.99 THEN qty * unit_price ELSE 0 END) AS standard_revenue,
+	SUM(CASE WHEN unit_price < 2.00 THEN qty * unit_price ELSE 0 END) AS budget_revenue
+FROM vw_orders;
+

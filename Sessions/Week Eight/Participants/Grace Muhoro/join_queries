@@ -1,0 +1,89 @@
+--Return one row per admission with these columns: PatientFullName, AdmissionDate, Diagnosis, AdmissionType. Order by AdmissionDate ascending
+
+SELECT CONCAT(firstname,' ', lastname) AS fullname, admissiondate, diagnosis, admissiontype
+FROM patients
+INNER JOIN admissions
+USING (patientid)
+ORDER BY admissiondate
+
+--List EVERY ward and the number of admissions it has had. Wards with zero admissions must still appear (with count = 0). Order by AdmissionCount descending.
+
+SELECT wardname, COUNT(admissionid) AS noadmitted
+FROM wards
+LEFT JOIN admissions
+USING(wardid)
+GROUP BY wardname
+ORDER BY noadmitted DESC
+
+--Find patients who have NEVER been admitted. Return: PatientID, FirstName, LastName, RegisteredGP
+
+SELECT patientid, firstname, lastname, registeredgp
+FROM patients 
+LEFT JOIN admissions
+USING (patientid)
+WHERE admissionid IS NULL
+
+--For every observation, return: PatientFullName, WardName, ObsDateTime, ObsType, ObsValue. Order by ObsDateTime ascending
+
+SELECT CONCAT(firstname,' ', lastname) AS fullname, wardname, obsdatetime, obstype, obsvalue
+FROM observations
+	INNER JOIN admissions
+		USING (admissionid)
+	INNER JOIN patients
+		USING (patientid)
+	INNER JOIN wards
+		USING (wardid)
+ORDER BY obsdatetime
+
+-- Return one row per admission with: PatientFullName, WardName, AdmissionDate, FirstObsType, FirstObsValue
+--"First observation" is the earliest ObsDateTime for that admission
+-- Admissions with NO observations should still appear (NULLs allowed)
+
+SELECT CONCAT(firstname, ' ', lastname) AS fullname, wardname, admissiondate, firstobsdate, 
+	MIN(obstype) AS firstobstype, MIN(obsvalue) AS firstobsvalue
+FROM admissions 
+INNER JOIN patients 
+    USING(patientid)
+INNER JOIN wards
+    USING(wardid)
+LEFT JOIN 
+		(SELECT admissionid, MIN(obsdatetime) AS firstobsdate
+    	FROM observations
+		GROUP BY admissionid) AS firstobs
+	USING(admissionid)
+LEFT JOIN observations
+    ON obsdatetime = firstobsdate AND
+    observations.admissionid = firstobs.admissionid
+GROUP BY fullname, wardname, admissiondate, firstobsdate
+ORDER BY admissiondate;
+
+--Find pairs of patients who share the same RegisteredGP and the same Postcode prefix (first 3 characters, e.g. 'LS1').
+-- Return: PatientA, PatientB, GP, PostcodePrefix. Avoid duplicate pairs (A-B and B-A) and self-pairs (A-A).
+
+SELECT CONCAT(p1.firstname, ' ', p1.lastname) AS PatientA, CONCAT(p2.firstname, ' ', p2.lastname) AS PatientB, p1.registeredgp AS GP, 
+	LEFT(p1.postcode, 3) AS postcodeprefix
+FROM patients AS p1
+INNER JOIN patients AS p2
+	ON p1.registeredgp = p2.registeredgp
+	AND LEFT(p1.postcode, 3) = LEFT(p2.postcode, 3)
+	AND p1.patientid < p2.patientid
+ORDER BY GP, postcodeprefix;
+
+--Write the BEST PROMPT you can to get an AI to produce a correct query for this question:
+--"Show me each patient who is currently still admitted (no discharge date), the ward they are on, the most recent vital signs observation taken, and how many days they have been in
+
+Write a query for PostgreSQL.
+
+Schema:
+	patients(patientid PK, nhsnumber, firstname, lastname, dateofbirth, gender, postcode, registeredgp, createddate)
+
+	admissons(admissionid PK, patientid FK, wardid FK, admissiondate, dischargedate, admissiontype, diagnosis, dischargereason)
+
+	wards(wardid PK, wardname, wardtype, capacity, site)
+
+	observations(observationid PK, admissionid FK, obsdatetime, obstype, obsvalue, recordedby)
+
+Task: For each patient who is currently still admitted (no discharge date), return patientid, full name, wardname, most recent observation taken (type and value), and number of days admitted.
+Quality bar: Use subqueries and joins. Handle NULLs explicitly. Order by number of days admitted descending.
+
+citly. Order by number of days admitted descending.

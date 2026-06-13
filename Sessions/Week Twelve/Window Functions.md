@@ -134,12 +134,6 @@ Rank the runners **inside their own category** by finish time (fastest = 1). A c
 
 > **Hint:** this is where `PARTITION BY` earns its keep.
 
-```sql
--- Your turn:
-SELECT Name, Category, FinishTime,
-       RANK() OVER (/* partition + order here */) AS CategoryRank
-FROM Runners;
-```
 
 ---
 
@@ -149,12 +143,6 @@ For **each runner**, show the difference between their finish time and the **fas
 
 > **Hint:** an aggregate window function (`MIN`) with `PARTITION BY` keeps every row — no `GROUP BY` needed.
 
-```sql
--- Your turn:
-SELECT Name, Category, FinishTime,
-       FinishTime - MIN(FinishTime) OVER (/* ... */) AS GapToLeader
-FROM Runners;
-```
 
 ---
 
@@ -164,19 +152,6 @@ Return **one row per extreme**: the fastest and the slowest runner in each categ
 
 > **Hint:** two `RANK()`s in a CTE — one ordered `ASC`, one `DESC` — then filter to rank `= 1`.
 
-```sql
--- Your turn:
-WITH Ranked AS (
-    SELECT Category, Name, FinishTime,
-           RANK() OVER (PARTITION BY Category ORDER BY FinishTime ASC)  AS FastestRank,
-           RANK() OVER (PARTITION BY Category ORDER BY FinishTime DESC) AS SlowestRank
-    FROM Runners
-)
-SELECT /* category, name, finishtime, and a CASE label */
-FROM Ranked
-WHERE FastestRank = 1 OR SlowestRank = 1
-ORDER BY Category;
-```
 
 ---
 
@@ -192,51 +167,7 @@ Same handful of functions, very different stakes.
 
 ---
 
-## ✅ Solutions
 
-<details>
-<summary>Exercise 1 — Ranking within category</summary>
-
-```sql
-SELECT Name, Category, FinishTime,
-       RANK() OVER (PARTITION BY Category ORDER BY FinishTime) AS CategoryRank
-FROM Runners
-ORDER BY Category, CategoryRank;
-```
-</details>
-
-<details>
-<summary>Exercise 2 — Gap to the category leader</summary>
-
-```sql
-SELECT Name, Category, FinishTime,
-       FinishTime - MIN(FinishTime) OVER (PARTITION BY Category) AS GapToLeader
-FROM Runners
-ORDER BY Category, FinishTime;
-```
-</details>
-
-<details>
-<summary>Exercise 3 — Fastest and slowest per category</summary>
-
-```sql
-WITH Ranked AS (
-    SELECT
-        Category, Name, FinishTime,
-        RANK() OVER (PARTITION BY Category ORDER BY FinishTime ASC)  AS FastestRank,
-        RANK() OVER (PARTITION BY Category ORDER BY FinishTime DESC) AS SlowestRank
-    FROM Runners
-)
-SELECT
-    Category, Name, FinishTime,
-    CASE
-        WHEN FastestRank = 1 THEN 'Fastest'
-        WHEN SlowestRank = 1 THEN 'Slowest'
-    END AS Position
-FROM Ranked
-WHERE FastestRank = 1 OR SlowestRank = 1
-ORDER BY Category, Position;
-```
 
 **Expected result:**
 
